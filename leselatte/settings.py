@@ -11,7 +11,28 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-from .settings_secret import *
+import json
+
+# Normally, we would not import anything from Django directly
+# into our settings, but ImproperlyConfigured is an exception.
+from django.core.exceptions import ImproperlyConfigured
+
+# JSON-based secrets module
+with open("secrets.json") as f:
+    secrets = json.loads(f.read())
+
+
+def get_secret(setting, secrets=secrets):
+    """Get the secret variable or return explicit exception"""
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {0} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
+
+
+SECRET_KEY = get_secret("SECRET_KEY")
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -75,10 +96,11 @@ WSGI_APPLICATION = 'leselatte.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'leselatte_db',
-        'USER': 'leselatte_admin',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': get_secret("DB_NAME"),
+        'USER': get_secret("DB_USER"),
+        'PASSWORD': get_secret("DB_PASSWORD"),
+        'HOST': get_secret("DB_HOST"),
+        'PORT': get_secret("DB_PORT"),
     }
 }
 
