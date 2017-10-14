@@ -1,0 +1,38 @@
+{% extends "librarian/base.html" %}
+
+{% block breadcrumb %}
+<ul class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="{% url 'leselatte:index'">Home</a>
+    </li>
+    <li class="active breadcrumb-item">
+        Books
+    </li>
+</ul>
+{% endblock breadcrumb %}
+
+
+{% block content %}
+    {% for book in books %}
+    <div class="book">
+        <div class="tile">
+            <div class="tile-icon">
+                <div class="example-tile-icon">
+                    <i class="icon icon-file centered"></i>
+                </div>
+            </div>
+            <div class="tile-content">
+                <p class="tile-title">{{ book.title }}</p>
+                {% for author in book.authors  %}
+                    <p class="tile-subtitle text-gray">{{ author }}</p>
+                {% endfor %}
+                <p class="tile-subtitle text-gray">{{ book.page_count }}</p>
+            </div>
+        </div>
+        <div class="divider"></div>
+    </div>
+
+
+    {% endfor %}
+
+{% endblock content %}

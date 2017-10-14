@@ -107,3 +107,4 @@ venv.bak/
 leselatte/settings_secret.py
 secrets.json
 
+.vscode/tags
